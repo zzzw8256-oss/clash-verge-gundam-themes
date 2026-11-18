@@ -1,0 +1,355 @@
+/* ==========================================================================
+   RX-78-2 GUNDAM "COMPLETE INTEGRATED EDITION" (Light Mode)
+   Fixes:
+   1. Clean V-Fin Titlebar Without Redundant Subtitles or Watermarks
+   2. Fixed Window Minimize/Maximize/Close Button Stretching Bug on Click/Focus
+   3. Translucent Ceramic-White Armor Cards -> Reveals Official Wallpaper
+   4. Beam Rifle Segmented Progress Bar + All 8 RX-78-2 Equipment Icons
+   ========================================================================== */
+
+:root {
+  --rx78-white-card: rgba(255, 255, 255, 0.72);
+  --rx78-white-hover: rgba(255, 255, 255, 0.88);
+  --rx78-sidebar-bg: rgba(255, 255, 255, 0.78);
+  --rx78-sub-slot: rgba(241, 245, 249, 0.75);
+  --rx78-blue: #0055D4;        /* 胸甲联邦蓝 */
+  --rx78-red: #E60012;         /* 盾牌/腹甲鲜红 */
+  --rx78-yellow: #FFCC00;      /* 天线/散热口明黄 */
+  --rx78-saber-pink: #FF2A85;  /* 光束军刀荧光粉 */
+  --rx78-eye-green: #00C853;   /* 头部双眸摄影机翠绿 */
+  --rx78-joint-dark: #111827;  /* 机械骨架深炭灰 */
+  --rx78-font-main: "Bahnschrift", "Segoe UI Variable Display", "Microsoft YaHei UI", "PingFang SC", sans-serif;
+  --rx78-font-mono: "Bahnschrift", "Cascadia Mono", "JetBrains Mono", Consolas, monospace;
+}
+
+@keyframes rx78-beam-charge {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 24px 0, 0 0; }
+}
+
+/* 0. 全局水贴级清晰字体控制 */
+body, button, input, span, div, p, a,
+.MuiTypography-root, .MuiButton-root, .MuiChip-root, .MuiInputBase-root {
+  font-family: var(--rx78-font-main) !important;
+  -webkit-font-smoothing: antialiased !important;
+  color: var(--rx78-joint-dark);
+}
+
+/* 1. 透明底层 + 浅白机库细网格遮罩（透出官方背景壁纸，无多余小字水印） */
+.layout, .layout.MuiPaper-root, .layout-content, .layout-content__left,
+.layout-content__right, .the-bar, .the-content, .the_titlebar,
+.base-page, .base-page > header, .base-container, .base-container > section, .base-content {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+.layout::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: rgba(248, 250, 252, 0.38);
+  background-image:
+    radial-gradient(circle at 85% 15%, rgba(0, 85, 212, 0.12), transparent 45%),
+    radial-gradient(circle at 15% 85%, rgba(230, 0, 18, 0.08), transparent 45%),
+    linear-gradient(rgba(0, 85, 212, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 85, 212, 0.035) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+  pointer-events: none;
+}
+
+.layout::after {
+  display: none !important;
+}
+
+/* ==========================================================================
+   2. 顶部自定义标题栏：RX-78-2 金黄V天线徽标 + 修复窗口按钮点击变形 Bug
+   ========================================================================== */
+.the_titlebar {
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.94) 0%, rgba(241, 245, 249, 0.88) 100%) !important;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-bottom: 2px solid #0055D4 !important;
+  padding: 0 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.the_titlebar img,
+.the_titlebar svg:first-of-type,
+.the_titlebar > div:first-child > * {
+  display: none !important;
+}
+
+.the_titlebar > div:first-child {
+  display: flex !important;
+  align-items: center !important;
+  width: 240px !important;
+  min-width: 240px !important;
+  height: 28px !important;
+  background-repeat: no-repeat !important;
+  background-position: left center !important;
+  background-size: 230px 28px !important;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='230' height='28' viewBox='0 0 230 28'><polygon points='15,17 2,4 7,12 15,21 23,12 28,4' fill='%23FFCC00' stroke='%23111827' stroke-width='1.4'/><polygon points='12,8 18,8 17,17 13,17' fill='%23E60012'/><text x='36' y='19' font-family='Bahnschrift, Arial Black, sans-serif' font-size='14' font-weight='900' fill='%23111827' letter-spacing='1.5'>RX-78-2 GUNDAM</text></svg>") !important;
+}
+
+.the_titlebar > div:last-child {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+  flex-shrink: 0 !important;
+}
+
+.the_titlebar > div:last-child > *,
+.the_titlebar > div:last-child > *:hover,
+.the_titlebar > div:last-child > *:active,
+.the_titlebar > div:last-child > *:focus,
+.the_titlebar > div:last-child > *:focus-visible {
+  box-sizing: border-box !important;
+  width: 34px !important;
+  min-width: 34px !important;
+  max-width: 34px !important;
+  height: 24px !important;
+  min-height: 24px !important;
+  max-height: 24px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  flex: 0 0 34px !important;
+  border-radius: 5px !important;
+  border: 1px solid rgba(0, 85, 212, 0.35) !important;
+  border-bottom: 2px solid #0055D4 !important;
+  background-color: rgba(255, 255, 255, 0.94) !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: 13px 13px !important;
+  box-shadow: 0 1px 4px rgba(17, 24, 39, 0.06) !important;
+  outline: none !important;
+  transform: none !important;
+  cursor: pointer !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease !important;
+}
+
+.the_titlebar > div:last-child > * > *,
+.the_titlebar > div:last-child .MuiTouchRipple-root {
+  display: none !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.the_titlebar > div:last-child > *:nth-child(1) {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><line x1='3' y1='8' x2='13' y2='8' stroke='%230055D4' stroke-width='2.2' stroke-linecap='round'/></svg>") !important;
+}
+.the_titlebar > div:last-child > *:nth-child(1):hover,
+.the_titlebar > div:last-child > *:nth-child(1):active {
+  background-color: #0055D4 !important;
+  border-color: #003EB3 !important;
+  border-bottom: 2px solid #FFCC00 !important;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><line x1='3' y1='8' x2='13' y2='8' stroke='%23FFFFFF' stroke-width='2.2' stroke-linecap='round'/></svg>") !important;
+}
+
+.the_titlebar > div:last-child > *:nth-child(2) {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect x='3.5' y='3.5' width='9' height='9' rx='1.2' fill='none' stroke='%230055D4' stroke-width='2'/></svg>") !important;
+}
+.the_titlebar > div:last-child > *:nth-child(2):hover,
+.the_titlebar > div:last-child > *:nth-child(2):active {
+  background-color: #0055D4 !important;
+  border-color: #003EB3 !important;
+  border-bottom: 2px solid #FFCC00 !important;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect x='3.5' y='3.5' width='9' height='9' rx='1.2' fill='none' stroke='%23FFFFFF' stroke-width='2'/></svg>") !important;
+}
+
+.the_titlebar > div:last-child > *:nth-child(3) {
+  border-color: rgba(230, 0, 18, 0.4) !important;
+  border-bottom: 2px solid #E60012 !important;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><line x1='4' y1='4' x2='12' y2='12' stroke='%23E60012' stroke-width='2.2' stroke-linecap='round'/><line x1='12' y1='4' x2='4' y2='12' stroke='%23E60012' stroke-width='2.2' stroke-linecap='round'/></svg>") !important;
+}
+.the_titlebar > div:last-child > *:nth-child(3):hover,
+.the_titlebar > div:last-child > *:nth-child(3):active {
+  background-color: #E60012 !important;
+  border-color: #B91C1C !important;
+  border-bottom: 2px solid #FFCC00 !important;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><line x1='4' y1='4' x2='12' y2='12' stroke='%23FFFFFF' stroke-width='2.2' stroke-linecap='round'/><line x1='12' y1='4' x2='4' y2='12' stroke='%23FFFFFF' stroke-width='2.2' stroke-linecap='round'/></svg>") !important;
+}
+
+/* ==========================================================================
+   3. 左侧导航栏 + 无小字纯净版 RX-78-2 徽标
+   ========================================================================== */
+.layout-content__left {
+  border-right: 3px solid var(--rx78-blue) !important;
+  background: var(--rx78-sidebar-bg) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  backdrop-filter: blur(14px) saturate(150%);
+  box-shadow: 4px 0 24px rgba(17, 24, 39, 0.05) !important;
+}
+
+.the-logo svg, .the-logo img, .the-logo > * { display: none !important; }
+
+.the-logo {
+  min-height: 68px !important;
+  border-bottom: 2px solid rgba(230, 0, 18, 0.2);
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 92% auto !important;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 62'><polygon points='110,25 42,5 58,20 110,34 162,20 178,5' fill='%23FFCC00' stroke='%23111827' stroke-width='1.6'/><polygon points='101,15 119,15 116,32 104,32' fill='%23E60012' stroke='%23111827' stroke-width='1.4'/><rect x='75' y='34' width='22' height='4' fill='%2300C853'/><rect x='123' y='34' width='22' height='4' fill='%2300C853'/><text x='110' y='54' font-family='Bahnschrift, Arial Black, sans-serif' font-size='16.5' font-weight='900' fill='%23111827' text-anchor='middle' letter-spacing='3.5'>RX-78-2</text></svg>") !important;
+}
+
+/* 4. 左侧导航菜单 + 8枚元祖装备图标 */
+.the-menu .MuiListItemButton-root {
+  margin: 5px 10px !important; padding: 8px 14px !important; border-radius: 8px !important;
+  border: 1px solid rgba(17, 24, 39, 0.06) !important; border-left: 3px solid var(--rx78-blue) !important;
+  background: rgba(255, 255, 255, 0.65) !important; transition: all 0.2s ease !important;
+}
+.the-menu .MuiListItemButton-root:hover {
+  background: #FFFFFF !important; border-color: rgba(0, 85, 212, 0.3) !important;
+  border-left: 4px solid var(--rx78-yellow) !important; transform: translateX(3px);
+}
+.the-menu .MuiListItemButton-root.Mui-selected {
+  background: linear-gradient(135deg, #0055D4 0%, #1D4ED8 100%) !important;
+  border-color: #003EB3 !important; border-left: 5px solid var(--rx78-yellow) !important;
+  box-shadow: -3px 0 0 var(--rx78-red), 0 6px 16px rgba(0, 85, 212, 0.28) !important;
+}
+.the-menu .MuiListItemText-primary {
+  font-size: 14.5px !important; font-weight: 700 !important; letter-spacing: 2.5px !important; color: var(--rx78-joint-dark) !important;
+}
+.the-menu .MuiListItemButton-root.Mui-selected .MuiListItemText-primary { color: #FFFFFF !important; font-weight: 800 !important; }
+
+.the-menu .MuiListItemIcon-root, .the-menu .MuiListItemIcon-root > div, .the-menu .MuiListItemIcon-root > span {
+  background: transparent !important; box-shadow: none !important;
+  min-width: 32px !important; width: 32px !important; height: 32px !important; margin-right: 10px !important;
+}
+.the-menu .MuiListItemIcon-root svg { display: none !important; }
+.the-menu .MuiListItemIcon-root::before {
+  content: ""; display: block; width: 27px; height: 27px; background-repeat: no-repeat; background-position: center; background-size: contain;
+}
+
+.the-menu > *:nth-child(1) .MuiListItemIcon-root::before { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><polygon points='8,6 28,6 32,16 28,32 8,32 4,16' fill='%23FFFFFF' stroke='%23111827' stroke-width='2.2'/><polygon points='18,14 3,4 9,14 18,18 27,14 33,4' fill='%23FFCC00' stroke='%23111827' stroke-width='1.2'/><rect x='8' y='17' width='7' height='3.5' fill='%2300C853'/><rect x='21' y='17' width='7' height='3.5' fill='%2300C853'/><polygon points='14,25 22,25 20,32 16,32' fill='%23E60012'/></svg>"); }
+.the-menu > *:nth-child(2) .MuiListItemIcon-root::before { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><polygon points='10,2 26,2 32,10 26,34 10,34 4,10' fill='%23E60012' stroke='%23FFFFFF' stroke-width='2.5'/><polygon points='10,2 26,2 32,10 26,34 10,34 4,10' fill='none' stroke='%23111827' stroke-width='1.5'/><rect x='10' y='6' width='16' height='5' fill='%23FFFFFF' stroke='%23111827' stroke-width='1'/><path d='M18,13 V29 M11,20 H25' stroke='%23FFCC00' stroke-width='4.2'/></svg>"); }
+.the-menu > *:nth-child(3) .MuiListItemIcon-root::before { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><polygon points='18,2 24,14 34,24 24,26 22,33 14,33 12,26 2,24 12,14' fill='%23FFFFFF' stroke='%23111827' stroke-width='1.8'/><polygon points='18,4 22,15 14,15' fill='%23E60012'/><rect x='14' y='16' width='8' height='9' fill='%230055D4'/><rect x='15' y='18' width='6' height='4' fill='%23FFCC00'/></svg>"); }
+.the-menu > *:nth-child(4) .MuiListItemIcon-root::before { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><circle cx='18' cy='18' r='14' fill='%230055D4' stroke='%23111827' stroke-width='2'/><polygon points='18,3 21,15 33,18 21,21 18,33 15,21 3,18 15,15' fill='%23FFCC00' stroke='%23111827' stroke-width='1.2'/><circle cx='18' cy='18' r='3' fill='%23E60012'/></svg>"); }
+.the-menu > *:nth-child(5) .MuiListItemIcon-root::before { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><circle cx='18' cy='18' r='14' fill='%23374151' stroke='%23111827' stroke-width='2'/><circle cx='18' cy='18' r='9' fill='%23FFCC00' stroke='%23111827' stroke-width='1.5'/><line x1='18' y1='4' x2='18' y2='32' stroke='%23E60012' stroke-width='2'/><line x1='4' y1='18' x2='32' y2='18' stroke='%23E60012' stroke-width='2'/></svg>"); }
+.the-menu > *:nth-child(6) .MuiListItemIcon-root::before { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><rect x='5' y='4' width='26' height='28' rx='3' fill='%23FFFFFF' stroke='%23111827' stroke-width='2'/><rect x='5' y='4' width='26' height='8' fill='%230055D4'/><rect x='9' y='15' width='18' height='4' fill='%23FFCC00'/><line x1='9' y1='23' x2='27' y2='23' stroke='%23E60012' stroke-width='2.5'/><line x1='9' y1='28' x2='20' y2='28' stroke='%230055D4' stroke-width='2.5'/></svg>"); }
+.the-menu > *:nth-child(7) .MuiListItemIcon-root::before { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><line x1='6' y1='30' x2='30' y2='6' stroke='%23FF2A85' stroke-width='4' stroke-linecap='round'/><line x1='30' y1='30' x2='6' y2='6' stroke='%23FF2A85' stroke-width='4' stroke-linecap='round'/><line x1='5' y1='31' x2='12' y2='24' stroke='%23FFFFFF' stroke-width='5'/><line x1='31' y1='31' x2='24' y2='24' stroke='%23FFFFFF' stroke-width='5'/></svg>"); }
+.the-menu > *:nth-child(8) .MuiListItemIcon-root::before { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><rect x='3' y='6' width='30' height='24' rx='3' fill='%230055D4' stroke='%23111827' stroke-width='2'/><rect x='6' y='11' width='10' height='14' fill='%23FFCC00' stroke='%23111827' stroke-width='1.5'/><rect x='20' y='11' width='10' height='14' fill='%23FFCC00' stroke='%23111827' stroke-width='1.5'/><polygon points='16,10 20,10 19,26 17,26' fill='%23E60012'/></svg>"); }
+
+/* 5. 左下角流量区与干净无冗余文字的页面顶栏 */
+.the-traffic {
+  margin: 8px 10px !important; padding: 10px !important; border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.78) !important; border: 1.5px solid rgba(0, 85, 212, 0.22) !important;
+  border-top: 3px solid var(--rx78-yellow) !important;
+}
+.the-traffic, .the-traffic .MuiTypography-root, .the-traffic span {
+  font-family: var(--rx78-font-mono) !important; font-weight: 800 !important; color: var(--rx78-joint-dark) !important;
+}
+.the-traffic .MuiBox-root:nth-of-type(1) svg path { fill: var(--rx78-red) !important; }
+.the-traffic .MuiBox-root:nth-of-type(2) svg path { fill: var(--rx78-blue) !important; }
+.the-traffic .MuiBox-root:nth-of-type(3) svg path { fill: #D97706 !important; }
+
+.base-page > header {
+  position: relative; background: rgba(255, 255, 255, 0.72) !important;
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border-bottom: 2px solid rgba(0, 85, 212, 0.2) !important;
+}
+.base-page > header::after { display: none !important; }
+
+/* 6. 光束步枪分格充能进度条 */
+body .MuiLinearProgress-root {
+  position: relative !important; height: 14px !important; border-radius: 4px !important;
+  background-color: #1E293B !important;
+  background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0px, rgba(255, 255, 255, 0.08) 10px, rgba(15, 23, 42, 0.9) 10px, rgba(15, 23, 42, 0.9) 13px) !important;
+  border: 1.5px solid var(--rx78-joint-dark) !important; overflow: hidden !important;
+}
+body .MuiLinearProgress-root::after {
+  content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 6px;
+  background: var(--rx78-yellow); border-left: 1.5px solid var(--rx78-joint-dark); z-index: 2;
+}
+body .MuiLinearProgress-bar {
+  border-radius: 2px !important;
+  background-image:
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.28) 0px, rgba(255, 255, 255, 0.28) 6px, transparent 6px, transparent 12px),
+    linear-gradient(90deg, var(--rx78-blue) 0%, var(--rx78-saber-pink) 50%, var(--rx78-yellow) 85%, var(--rx78-eye-green) 100%) !important;
+  background-size: 24px 24px, 100% 100% !important;
+  animation: rx78-beam-charge 1.2s linear infinite !important;
+  border-right: 2px solid #FFFFFF !important;
+}
+
+/* 7. 小图标按钮、卡片、下拉箭头与开关（严格隔离标题栏按钮） */
+body .MuiIconButton-root:not(.the_titlebar *) {
+  border-radius: 6px !important; padding: 5px !important; margin: 0 2px !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(0, 85, 212, 0.25) !important; border-bottom: 2px solid var(--rx78-blue) !important;
+  transition: all 0.22s ease !important;
+}
+body .MuiIconButton-root:not(.the_titlebar *) svg, body .MuiIconButton-root:not(.the_titlebar *) svg path {
+  fill: var(--rx78-blue) !important; color: var(--rx78-blue) !important; transition: transform 0.35s ease !important;
+}
+body .MuiIconButton-root:not(.the_titlebar *):hover {
+  background: var(--rx78-yellow) !important; border-color: var(--rx78-joint-dark) !important;
+  border-bottom: 2px solid var(--rx78-red) !important; transform: translateY(-1px) scale(1.06) !important;
+}
+body .MuiIconButton-root:not(.the_titlebar *):hover svg, body .MuiIconButton-root:not(.the_titlebar *):hover svg path {
+  fill: var(--rx78-joint-dark) !important; color: var(--rx78-joint-dark) !important; transform: rotate(90deg) !important;
+}
+
+.base-content .MuiPaper-root, .base-content .MuiCard-root, .base-content [class*="MuiGrid"] > .MuiBox-root {
+  clip-path: none !important; border-radius: 12px !important;
+  background-color: var(--rx78-white-card) !important;
+  background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.84) 0%, rgba(248, 250, 252, 0.68) 100%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(140%); backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  border-top: 4px solid var(--rx78-blue) !important;
+  box-shadow: 0 8px 28px rgba(17, 24, 39, 0.06) !important;
+}
+.base-content [class*="MuiGrid-item"]:nth-of-type(even) .MuiPaper-root,
+.base-content [class*="MuiGrid-item"]:nth-of-type(even) > .MuiBox-root { border-top: 4px solid var(--rx78-red) !important; }
+.base-content [class*="MuiGrid-item"]:nth-of-type(5) .MuiPaper-root,
+.base-content [class*="MuiGrid-item"]:nth-of-type(5) > .MuiBox-root { border-top: 4px solid var(--rx78-yellow) !important; }
+
+.base-content svg, .base-content svg path { fill: var(--rx78-blue) !important; color: var(--rx78-blue) !important; }
+.base-content [class*="MuiGrid-item"]:nth-of-type(even) svg,
+.base-content [class*="MuiGrid-item"]:nth-of-type(even) svg path { fill: var(--rx78-red) !important; color: var(--rx78-red) !important; }
+.base-content .MuiBox-root > .MuiBox-root > svg:first-child { background: rgba(0, 85, 212, 0.08) !important; border-radius: 8px !important; }
+
+body .MuiSelect-icon {
+  width: 22px !important; height: 22px !important; right: 8px !important; top: calc(50% - 11px) !important;
+  background-repeat: no-repeat !important; background-position: center !important; background-size: contain !important;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><polygon points='12,17 2,6 6,13 12,20 18,13 22,6' fill='%23FFCC00' stroke='%23111827' stroke-width='1.5'/><polygon points='10,9 14,9 13,16 11,16' fill='%23E60012'/></svg>") !important;
+}
+body .MuiSelect-icon path { display: none !important; }
+
+body .MuiButton-root:not(.the_titlebar *) {
+  clip-path: none !important; border-radius: 8px !important;
+  border: 1.5px solid rgba(0, 85, 212, 0.28) !important; border-bottom: 3px solid var(--rx78-blue) !important;
+  background: rgba(255, 255, 255, 0.85) !important; color: var(--rx78-joint-dark) !important; font-weight: 800 !important;
+}
+body .MuiButton-root:not(.the_titlebar *):hover, body .MuiButton-containedPrimary:not(.the_titlebar *) {
+  background: var(--rx78-blue) !important; border-color: #003EB3 !important;
+  border-bottom: 3px solid var(--rx78-yellow) !important; color: #FFFFFF !important;
+}
+
+body .MuiSwitch-track { background-color: #CBD5E1 !important; border: 1.5px solid #64748B !important; border-radius: 99px !important; }
+body .MuiSwitch-thumb { background-color: #FFFFFF !important; border: 1.5px solid var(--rx78-joint-dark) !important; }
+body .MuiSwitch-switchBase.Mui-checked .MuiSwitch-thumb {
+  background-color: var(--rx78-yellow) !important; border: 1.5px solid var(--rx78-joint-dark) !important;
+}
+body .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track { background-color: var(--rx78-red) !important; border-color: var(--rx78-joint-dark) !important; }
+
+body .MuiChip-root {
+  border-radius: 6px !important; border: 1.5px solid rgba(255, 42, 133, 0.4) !important;
+  background: rgba(255, 42, 133, 0.12) !important; color: #BE185D !important; font-family: var(--rx78-font-mono) !important; font-weight: 800 !important;
+}
+body .MuiChip-root.MuiChip-colorSuccess, .base-content [class*="delay"] {
+  border-radius: 6px !important; border: 1.5px solid #059669 !important;
+  background: #D1FAE5 !important; color: #065F46 !important; font-family: var(--rx78-font-mono) !important; font-weight: 800 !important;
+}
+
+body .MuiDialog-paper, body .MuiMenu-paper, body .MuiPopover-paper {
+  clip-path: none !important; border-radius: 12px !important;
+  background-color: rgba(255, 255, 255, 0.95) !important; -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(0, 85, 212, 0.25) !important; border-top: 4px solid var(--rx78-red) !important;
+}
